@@ -6,10 +6,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 
 
-contract ContractName is ERC721A, Ownable {
+contract ContractName is ERC721A, Ownable, ReentrancyGuard {
   
     uint256 price = 0.01 ether;
     uint256 _maxSupply = 3000;
@@ -28,7 +29,7 @@ contract ContractName is ERC721A, Ownable {
 
 
     //          string memory hidden, string memory base, bytes32 hashroot   <= For constructor
-    constructor() ERC721A("Kaori", "KO") {
+    constructor() ERC721A("CollectionName", "CN") {
 
     }
 
@@ -96,7 +97,7 @@ contract ContractName is ERC721A, Ownable {
 
     // ================================ Withdraw Function ====================
 
-    function withdraw() public onlyOwner {
+    function withdraw() public onlyOwner nonReentrant{
         uint256 CurrentContractBalance = address(this).balance;
 
         (bool os, ) = payable(owner()).call{value: CurrentContractBalance}("");
