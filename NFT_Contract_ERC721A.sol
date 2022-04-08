@@ -71,6 +71,14 @@ contract ContractName is ERC721A, Ownable, ReentrancyGuard {
     function setExtensionURL(string memory uri) public onlyOwner{
         ExtensionURL = uri;
     }
+    
+    function setCostPrice(uint256 _cost) public onlyOwner{
+        price = _cost;
+    } 
+    
+    function setSupply(uint256 supply) public onlyOwner{
+        _maxSupply = supply;
+    }
 
     // ====================== Whitelist Feature ============================
 
