@@ -63,6 +63,10 @@ contract ContractName is ERC721A, Ownable, ReentrancyGuard {
     function setHiddenURL(string memory uri) public onlyOwner {
         HiddenURL = uri;
     }
+    
+    function setRevealed(bool _state) public onlyOwner {
+        revealed = _state;
+    }
 
     function setbaseURL(string memory uri) public onlyOwner{
         baseURL = uri;
