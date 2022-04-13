@@ -10,12 +10,14 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 
 
-contract ContractName is ERC721A, Ownable, ReentrancyGuard {
+contract Kaori is ERC721A, Ownable, ReentrancyGuard {
+
+    using Strings for uint256;
   
     uint256 price = 0.01 ether;
     uint256 _maxSupply = 3000;
-    uint256 maxMintAmountPerTx = 2;
-    uint256 maxMintAmountPerWallet = 2;
+    uint256 maxMintAmountPerTx = 5;
+    uint256 maxMintAmountPerWallet = 5;
 
     string baseURL = "";
     string ExtensionURL = ".json";
@@ -29,13 +31,13 @@ contract ContractName is ERC721A, Ownable, ReentrancyGuard {
 
 
     //          string memory hidden, string memory base, bytes32 hashroot   <= For constructor
-    constructor() ERC721A("CollectionName", "CN") {
+    constructor() ERC721A("Kaori", "KO") {
 
     }
 
     // ================= Mint Function =======================
 
-    function Mint(address to, uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable{
+    function mint(address to, uint256 _mintAmount, bytes32[] calldata _merkleProof) public payable{
         require(!paused, "The contract is paused!");
         require(_mintAmount > 0 && _mintAmount <= maxMintAmountPerTx, "Invalid mint amount!");
         require(totalSupply() + _mintAmount <= _maxSupply, "Max supply exceeded!");
@@ -63,7 +65,7 @@ contract ContractName is ERC721A, Ownable, ReentrancyGuard {
     function setHiddenURL(string memory uri) public onlyOwner {
         HiddenURL = uri;
     }
-    
+
     function setRevealed(bool _state) public onlyOwner {
         revealed = _state;
     }
@@ -75,7 +77,7 @@ contract ContractName is ERC721A, Ownable, ReentrancyGuard {
     function setExtensionURL(string memory uri) public onlyOwner{
         ExtensionURL = uri;
     }
-    
+
     function setCostPrice(uint256 _cost) public onlyOwner{
         price = _cost;
     } 
@@ -122,11 +124,14 @@ contract ContractName is ERC721A, Ownable, ReentrancyGuard {
     function tokenURI(uint256 tokenId) public view override(ERC721A) returns (string memory){
         require(_exists(tokenId),"ERC721Metadata: URI query for nonexistent token");
 
-    if (revealed == false) {
-      return HiddenURL;
-    }
+        if (revealed == false) {
+        return HiddenURL;
+        }
 
-        return super.tokenURI(tokenId);
+        string memory currentBaseURI = _baseURI();
+        return bytes(currentBaseURI).length > 0
+            ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), ExtensionURL))
+            : '';
     }
 
     function checkWhitelist() public view returns (bool){
